@@ -1903,7 +1903,7 @@ func TestNetworkModeWithContainerReference(t *testing.T) {
 }
 
 // creates a temporary dir in which the files will be extracted. Then it will compare the bytes of each file in the source with the bytes from the copied-from-container file
-func assertExtractedFiles(t *testing.T, ctx context.Context, container Container, hostFilePath string, containerFilePath string) {
+func assertExtractedFiles(t *testing.T, ctx context.Context, container Container, hostFilePath, containerPath string) {
 	// create all copied files into a temporary dir
 	tmpDir := t.TempDir()
 
@@ -1920,7 +1920,7 @@ func assertExtractedFiles(t *testing.T, ctx context.Context, container Container
 			require.NoError(t, err)
 		}
 
-		fp := filepath.Join(containerFilePath, srcFile.Name())
+		fp := filepath.Join(containerPath, srcFile.Name())
 		// copy file by file, as there is a limitation in the Docker client to copy an entiry directory from the container
 		// paths for the container files are using Linux path separators
 		fd, err := container.CopyFileFromContainer(ctx, fp)
