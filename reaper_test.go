@@ -25,7 +25,7 @@ const testSessionID = "this-is-a-different-session-id"
 type mockReaperProvider struct {
 	req               ContainerRequest
 	hostConfig        *container.HostConfig
-	enpointSettings   map[string]*network.EndpointSettings
+	endpointSettings  map[string]*network.EndpointSettings
 	config            TestcontainersConfig
 	initialReaper     *Reaper
 	initialReaperOnce sync.Once
@@ -64,18 +64,20 @@ func (m *mockReaperProvider) RunContainer(ctx context.Context, req ContainerRequ
 	m.req = req
 
 	m.hostConfig = &container.HostConfig{}
-	m.enpointSettings = map[string]*network.EndpointSettings{}
+	m.endpointSettings = map[string]*network.EndpointSettings{}
 
 	if req.HostConfigModifier == nil {
 		req.HostConfigModifier = defaultHostConfigModifier(req)
 	}
 	req.HostConfigModifier(m.hostConfig)
 
-	if req.EnpointSettingsModifier != nil {
-		req.EnpointSettingsModifier(m.enpointSettings)
+	if req.EndpointSettingsModifier != nil {
+		req.EndpointSettingsModifier(m.endpointSettings)
+	} else if req.EnpointSettingsModifier != nil {
+		req.EnpointSettingsModifier(m.endpointSettings)
 	}
 
-	// we're only interested in the request, so instead of mocking the Docker client
+	// we're only interested in the request, so instead `of mocking the Docker client
 	// we'll error out here
 	return nil, errExpected
 }
